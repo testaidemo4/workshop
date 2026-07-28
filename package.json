@@ -1,0 +1,14 @@
+{
+  "name": "widget-wall",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "manifest": "node scripts/build_registry.mjs",
+    "check": "node scripts/check_widgets.mjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}

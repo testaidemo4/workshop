@@ -1,0 +1,74 @@
+name: Assign workshop task
+
+on: create
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  assign:
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'workshop/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create assignment issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const crypto = require('crypto');
+
+            const branch = context.payload.ref;          // workshop/pagduldx
+            const legalId = branch.split('/').pop();      // pagduldx
+
+            const open = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100,
+            });
+            if (open.data.some(i => i.title.includes(`(${legalId})`))) {
+              core.info(`Assignment already exists for ${legalId}; skipping.`);
+              return;
+            }
+
+            const pool = JSON.parse(fs.readFileSync('tasks/pool.json', 'utf8'));
+            const hash = crypto.createHash('sha256').update(branch).digest('hex');
+            const task = pool[parseInt(hash.slice(0, 8), 16) % pool.length];
+
+            const body = [
+              `**Task ID:** ${task.id}  |  **Engineer:** ${legalId}  |  **Branch:** \`${branch}\``,
+              ``,
+              `## Build: ${task.title}`,
+              `${task.brief}`,
+              ``,
+              `## Where`,
+              `Create one file: \`widgets/${legalId}.js\`. Copy the pattern in \`examples/example-widget.js\`.`,
+              ``,
+              `## The widget contract`,
+              '```js',
+              `WORKSHOP.register({`,
+              `  id: "${legalId}",        // must equal your file name`,
+              `  title: "${task.title}",`,
+              `  author: "${legalId}",`,
+              `  mount: function (root) {`,
+              `    // build your widget's DOM inside \`root\` and wire up the behavior`,
+              `  },`,
+              `});`,
+              '```',
+              ``,
+              `## Requirements`,
+              `- Register exactly one widget; \`id\` must equal your file name (\`${legalId}\`).`,
+              `- Build everything inside \`root\` — do not touch the page outside it.`,
+              `- Self-contained: no external libraries or network calls.`,
+              `- It must actually **work** (buttons/inputs do something visible).`,
+              `- Do **not** edit index.html, loader.js, styles.css, registry.js, or anyone else's widget.`,
+              `- Open a PR into \`main\` that references this issue.`,
+              ``,
+              `## Done when`,
+              `Your widget shows as its own card on the Widget Wall and its interaction works.`,
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `${task.id}: build ${legalId}.js — ${task.title} (${legalId})`,
+              body, labels: ['assignment'],
+            });

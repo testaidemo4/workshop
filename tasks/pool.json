@@ -1,0 +1,10 @@
+[
+  { "id": "TASK-COUNTER",  "title": "Click counter",         "brief": "A number that starts at 0, an Increment button, and a Reset button." },
+  { "id": "TASK-STOPWATCH","title": "Stopwatch",             "brief": "Start, Stop, and Reset buttons showing elapsed seconds, updating live." },
+  { "id": "TASK-TIP",      "title": "Tip calculator",        "brief": "Inputs for bill amount and tip %, showing the tip and the total, updating as you type." },
+  { "id": "TASK-TODO",     "title": "Mini to-do list",       "brief": "A text box + Add button that appends items to a list; each item can be marked done or removed." },
+  { "id": "TASK-COLOR",    "title": "Color mixer",           "brief": "Three sliders (R, G, B) that live-preview the mixed color and show its hex code." },
+  { "id": "TASK-TEMP",     "title": "Temperature converter", "brief": "Type Celsius and see Fahrenheit update live (and the reverse)." },
+  { "id": "TASK-DICE",     "title": "Dice roller",           "brief": "A Roll button that shows a random 1-6 and keeps a short history of recent rolls." },
+  { "id": "TASK-PICKER",   "title": "Random picker",         "brief": "A button that shows a random item from a small built-in list, never repeating the same one twice in a row." }
+]
