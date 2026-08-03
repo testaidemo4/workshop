@@ -55,7 +55,6 @@ Do not modify anything.
 ```
 
 ---
-
 ## Step 2 — Create your branch (this triggers your task)
 
 Create a branch named `workshop/<your-nickname>` from `main`. In ChatGPT, send this to the GitHub connector:
@@ -77,6 +76,25 @@ Prefer the GitHub web interface? You can create the branch there instead:
 5. Select **Create new branch**.
 
 Pushing or creating the branch triggers a GitHub Action that should open your **assignment Issue** within approximately one minute.
+
+### If Codex says it's on `master`/`main` and stops
+
+Creating the branch on GitHub only changes the **remote**. Codex opens its workspace from a default snapshot, so it can still be sitting on `master` (often with "no commits yet") and won't see your branch. You don't need to install anything — git is already in the Codex environment, so the commands below just point its existing checkout at your branch. Send this to Codex:
+
+```
+Do not build anything yet. Run these and show the raw output:
+git fetch origin
+git checkout workshop/<your-nickname>
+git pull --ff-only origin workshop/<your-nickname>
+git branch --show-current
+```
+
+The last line must print `workshop/<your-nickname>`. Notes:
+
+- If checkout says the branch doesn't exist, the `git fetch origin` just before it is what pulls it down — run the block as-is. Still missing? Run `git branch -r`; if `origin/workshop/<your-nickname>` isn't listed, the branch was created on the wrong remote.
+- If `git remote -v` doesn't name `testaidemo4/workshop`, Codex isn't in the shared repo at all. Re-open Codex and select **`testaidemo4/workshop`** as the working project, then run the block above.
+- **Best fix:** when you start a Codex task, set the environment's **base branch** to `workshop/<your-nickname>` so Codex opens on your branch from the first second and the branch guard passes immediately.
+
 
 ---
 
@@ -155,11 +173,13 @@ Do not build the widget yet.
 |Exhibitions|Yellow (`#F9A825`)|Accent elements with dark text for contrast|
 
 ---
-## Step 5 — Build the widget
+# Step 5 — Build the widget
 
 Use one reliable, bounded prompt to complete the initial implementation before beginning the prompting exercise.
 
-### Copy build prompt
+> **The branch guard below is intentional.** If Codex reports it's on `master`/`main` and stops without building, that's the guard doing its job — get Codex onto your branch using the fix in [Step 2 → *If Codex says it's on `master`/`main` and stops*](#if-codex-says-its-on-mastermain-and-stops), then re-run this prompt. Also remember to replace every `<your-nickname>` with your actual nickname — leaving the placeholder in is a common reason the guard trips.
+
+## Copy build prompt
 
 Replace `<your-nickname>` with your actual nickname before giving this prompt to Codex.
 
@@ -192,7 +212,7 @@ After editing:
 - Do not commit or push yet.
 ```
 
-### Fast finishers
+## Fast finishers
 
 After the initial widget is working, try these follow-up prompts one at a time:
 
@@ -200,6 +220,7 @@ After the initial widget is working, try these follow-up prompts one at a time:
 - Ask Codex for one visual refinement that preserves `AGENTS.md` and the assigned behavior.
 - Ask Codex to explain the most important implementation choice using exact line references from `widgets/<your-nickname>.js`.
 ---
+
 
 ### Step 6 — Preview and test locally with Codex
 
