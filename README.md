@@ -434,27 +434,85 @@ Here are my answers for my career roadmap:
 Hold these. Do not build anything yet — wait for my next instruction.
 ```
 
-## Step 3 — Generate the plan (JSON first)
+## Step 3 — Generate the plan 
 
-Make the agent think in structure before it draws anything:
+## Generate the roadmap as a directory tree
 
+After answering the three career questions, use the following prompt to generate a structured roadmap before building the page.
+
+### Prompt
+
+```text
+Turn my answers into a career PLAN using the schema and level definitions in README.md.
+
+Present the result as a directory-style text tree, not as a JSON code block.
+
+Structure:
+- The root is my 3–5 year career goal.
+- The root has 4 ordered stage branches, progressing from “Now” to the goal.
+- Include a timeframe beside each stage.
+- Each stage contains 3–4 learning topics.
+- Prefix every topic with its level:
+  - [CORE] = essential; do this
+  - [GROW] = recommended
+  - [EXPLORE] = optional
+- Each topic contains 2–3 concrete sub-skills as leaf nodes.
+
+Use directory-tree characters so the result looks like this:
+
+Goal
+├── Stage
+│   ├── [CORE] Topic
+│   │   ├── Sub-skill
+│   │   └── Sub-skill
+│   └── [GROW] Topic
+│       ├── Sub-skill
+│       └── Sub-skill
+└── Final stage
+    └── [CORE] Topic
+        ├── Sub-skill
+        └── Sub-skill
+
+Make the roadmap specific to my role, current work, and goal. Put foundations before advanced topics, avoid filler, and ensure every branch contributes meaningfully to the goal.
+
+After the tree, give me exactly two sentences summarizing the path and confirm whether its branches and ordering make sense.
+
+Do not build the page or modify any files yet.
 ```
-Turn my answers into a PLAN using the JSON schema in README.md.
 
-Rules:
-- 4 stages that move from "Now" to my 3–5 year goal, each with a timeframe.
-- Each stage has 3–4 nodes (topics to learn), and each node has:
-  - a level: core (do this), grow (recommended), or explore (optional),
-  - 2–3 concrete sub-skills as topics.
-- Make it specific to MY answers and put things in a sensible order —
-  foundations before advanced, no filler.
+### Expected output
 
-Show me the PLAN JSON and give me a two-sentence summary of the path.
-Do not build the page yet.
+```text
+DevOps Engineer (3–5 year goal)
+├── Now (0–6 months)
+│   ├── [CORE] Systems foundations
+│   │   ├── Linux administration
+│   │   ├── Bash and Python scripting
+│   │   └── Processes, filesystems, and networking
+│   └── [CORE] Infrastructure as code
+│       ├── Reusable Terraform modules
+│       ├── Remote state and locking
+│       └── Testing and policy validation
+├── Year 1 (6–18 months)
+│   └── ...
+├── Years 2–3 (18–36 months)
+│   └── ...
+└── Years 3–5 (36–60 months)
+    └── ...
+```
+
+Review the tree before building:
+
+- Does every topic support the career goal?
+- Are foundational skills placed before advanced skills?
+- Does each stage represent a realistic progression?
+- Are optional topics marked as `EXPLORE` rather than treated as requirements?
+
+Ask the agent to revise any weak or misplaced branch before continuing.
 ```
 
 Skim the JSON: does the order make sense, and does it actually lead to your goal? If a stage feels off, say so in one sentence and ask the agent to revise the PLAN before building.
-
+```
 ## Step 4 — Build the roadmap page
 
 Once the plan looks right:
