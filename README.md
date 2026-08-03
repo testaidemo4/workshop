@@ -56,32 +56,25 @@ Do not modify anything.
 
 ---
 
-### Step 2 — Create your branch (this triggers your task)
+## Step 2 — Create your branch (this triggers your task)
 
-Create a branch named `workshop/<your-nickname>` from `main`.
+Create a branch named `workshop/<your-nickname>` from `main`. In ChatGPT, send this to the GitHub connector:
+
+```
+@github create workshop/<your-nickname> from main
+```
 
 > **If your nickname is already taken:** branch names must be unique. If a branch named `workshop/<your-nickname>` already exists, append a number to your nickname (e.g. `workshop/<your-nickname>2`, then `3`, and so on) until the branch name is free. Use this same numbered nickname for your file name (`widgets/<your-nickname>2.js`) and everywhere else this guide references your nickname.
 
-You can create the branch using either method below.
+### Other options
 
-#### Option 1: GitHub web interface
+Prefer the GitHub web interface? You can create the branch there instead:
 
 1. Open the repository’s [Branches page](https://github.com/testaidemo4/workshop/branches).
 2. Select **New branch**.
 3. Enter `workshop/<your-nickname>` as the branch name.
 4. Select `main` as the source branch.
 5. Select **Create new branch**.
-
-#### Option 2: VS Code terminal
-
-Open the repository in VS Code, then run:
-
-```
-git checkout main
-git pull
-git checkout -b workshop/<your-nickname>
-git push -u origin workshop/<your-nickname>
-```
 
 Pushing or creating the branch triggers a GitHub Action that should open your **assignment Issue** within approximately one minute.
 
