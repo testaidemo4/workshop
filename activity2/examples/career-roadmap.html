@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Career Roadmap</title>
+<style>
+  :root{
+    --paper:#EEF1F7;
+    --ink:#0F1730;
+    --muted:#5A6685;
+    --line:#6D28D9;          /* the career line — the one bold color */
+    --line-soft:#EDE9FE;
+    --core:#6D28D9;
+    --grow-bg:#EDE9FE; --grow-tx:#5B21B6;
+    --explore-bd:#C3CBE0; --explore-tx:#5A6685;
+    --card:#FFFFFF;
+    --board:#0E1730;         /* blueprint navy for the roadmap canvas */
+    --board-grid:rgba(255,255,255,.05);
+    --ok:#12B981;
+    --shadow:0 8px 26px rgba(15,23,48,.12);
+    --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper); color:var(--ink); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:28px 20px 60px}
+
+  /* Header */
+  .head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 24px;margin-bottom:20px}
+  .eyebrow{font:600 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--line)}
+  h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin:8px 0 4px}
+  .journey{font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .journey b{color:var(--ink);font-weight:700}
+
+  /* Tabs */
+  .tabs{display:inline-flex;background:#E2E6F0;border-radius:12px;padding:4px;margin:18px 0 22px;gap:2px}
+  .tab{border:0;background:transparent;font:600 14px var(--sans);color:var(--muted);
+       padding:9px 18px;border-radius:9px;cursor:pointer;transition:.18s}
+  .tab[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 2px 6px rgba(15,23,48,.10)}
+  .tab:focus-visible{outline:2px solid var(--line);outline-offset:2px}
+
+  .panel{display:none;animation:fade .35s ease both}
+  .panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Progress */
+  .progress{display:flex;align-items:center;gap:12px;margin:0 0 22px}
+  .bar{flex:1;height:8px;background:#DfE4EF;border-radius:99px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--line),#9F67FF);
+           border-radius:99px;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+  .pct{font:700 13px var(--mono);color:var(--line);min-width:42px;text-align:right}
+
+  /* Roadmap board */
+  .board{position:relative;background:var(--board);border-radius:20px;padding:34px 18px 44px;
+         box-shadow:var(--shadow);overflow:hidden}
+  .board::before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(var(--board-grid) 1px,transparent 1px),
+                     linear-gradient(90deg,var(--board-grid) 1px,transparent 1px);
+    background-size:26px 26px;pointer-events:none}
+  .spine{position:absolute;top:34px;bottom:44px;left:50%;width:3px;transform:translateX(-50%);
+         background:linear-gradient(#8B5CF6,#6D28D9);border-radius:3px}
+  .pulse{position:absolute;left:50%;top:34px;width:14px;height:14px;margin-left:-7px;border-radius:50%;
+         background:#C4B5FD;box-shadow:0 0 0 6px rgba(196,181,253,.25);}
+  .pulse.run{animation:travel 2.4s cubic-bezier(.5,.1,.3,1) .3s both}
+  @keyframes travel{from{top:34px;opacity:.2}20%{opacity:1}to{top:calc(100% - 52px);opacity:.55}}
+
+  .stage{position:relative;margin:0 0 30px}
+  .stage:last-child{margin-bottom:0}
+  .milestone{position:relative;z-index:2;display:flex;justify-content:center;margin-bottom:16px}
+  .milestone > span{background:var(--line);color:#fff;font:700 13px var(--sans);
+    padding:7px 16px;border-radius:99px;box-shadow:0 4px 14px rgba(109,40,217,.5)}
+  .milestone small{display:block;font:600 10px/1 var(--mono);letter-spacing:.14em;
+    text-transform:uppercase;color:#D8CCFF;margin-top:3px;text-align:center}
+
+  .row{position:relative;z-index:2;display:flex;margin:14px 0}
+  .row.l{justify-content:flex-start}
+  .row.r{justify-content:flex-end}
+  .node{position:relative;width:calc(50% - 26px);background:var(--card);border-radius:14px;
+    padding:13px 15px;box-shadow:var(--shadow);cursor:pointer;
+    opacity:0;transform:translateY(10px);transition:transform .18s ease, box-shadow .18s ease}
+  .node.seen{opacity:1;transform:none;transition:transform .18s ease, box-shadow .18s ease, opacity .5s ease}
+  .node:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(15,23,48,.20)}
+  .node.done{outline:2px solid var(--ok)}
+  /* connector from node to spine */
+  .node::after{content:"";position:absolute;top:22px;width:26px;height:2px;background:#7C5CD6}
+  .row.l .node::after{right:-26px}
+  .row.r .node::after{left:-26px}
+  .node::before{content:"";position:absolute;top:18px;width:10px;height:10px;border-radius:50%;
+    background:#C4B5FD;border:2px solid var(--board)}
+  .row.l .node::before{right:-31px}
+  .row.r .node::before{left:-31px}
+
+  .node h3{margin:0 0 8px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .node h3 .chk{width:18px;height:18px;border-radius:5px;border:2px solid #CBD3E6;flex:0 0 auto;
+    display:grid;place-items:center;font-size:12px;color:#fff}
+  .node.done .chk{background:var(--ok);border-color:var(--ok)}
+  .tag{font:700 9px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+    padding:4px 7px;border-radius:6px;margin-left:auto}
+  .tag.core{background:var(--core);color:#fff}
+  .tag.grow{background:var(--grow-bg);color:var(--grow-tx)}
+  .tag.explore{background:transparent;color:var(--explore-tx);border:1px solid var(--explore-bd)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font:500 11px var(--mono);background:#F1F3F9;color:#3A425F;
+    padding:4px 8px;border-radius:6px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px;
+    font:600 11px var(--sans);color:#CBD3E6}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .dot.core{background:var(--core)} .dot.grow{background:#A78BFA} .dot.explore{background:#8792AD}
+
+  /* JSON tab */
+  .jsonbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .jsonbar p{margin:0;color:var(--muted);font-size:13px}
+  .copy{border:1px solid #CBD3E6;background:var(--card);border-radius:9px;padding:8px 14px;
+    font:600 13px var(--sans);cursor:pointer;transition:.15s}
+  .copy:hover{border-color:var(--line);color:var(--line)}
+  pre{margin:0;background:var(--board);color:#E7E3FB;border-radius:16px;padding:20px;
+    overflow:auto;font:13px/1.7 var(--mono);box-shadow:var(--shadow)}
+  .jk{color:#C4B5FD}.js{color:#7EE7C7}.jn{color:#FBBF77}.jb{color:#F0A0C0}
+
+  @media (max-width:640px){
+    .spine,.pulse{left:22px}
+    .milestone{justify-content:flex-start;padding-left:8px}
+    .row.l,.row.r{justify-content:flex-end}
+    .node{width:calc(100% - 44px)}
+    .row.l .node::after,.row.r .node::after{left:-26px;right:auto}
+    .row.l .node::before,.row.r .node::before{left:-31px;right:auto}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .node{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow">3–5 Year Plan</div>
+      <h1>Career Roadmap</h1>
+      <div class="journey" id="journey"></div>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="t-map" aria-controls="p-map" aria-selected="true">Roadmap</button>
+    <button class="tab" role="tab" id="t-json" aria-controls="p-json" aria-selected="false">Plan JSON</button>
+  </div>
+
+  <!-- ROADMAP -->
+  <section class="panel on" id="p-map" role="tabpanel" aria-labelledby="t-map">
+    <div class="progress">
+      <div class="bar"><i id="fill"></i></div>
+      <div class="pct" id="pct">0%</div>
+    </div>
+    <div class="board" id="board">
+      <div class="spine"></div>
+      <div class="pulse" id="pulse"></div>
+      <div id="stages"></div>
+      <div class="legend">
+        <span><i class="dot core"></i>Core — do this</span>
+        <span><i class="dot grow"></i>Grow — recommended</span>
+        <span><i class="dot explore"></i>Explore — optional</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- JSON -->
+  <section class="panel" id="p-json" role="tabpanel" aria-labelledby="t-json" hidden>
+    <div class="jsonbar">
+      <p>This is the plan the roadmap is drawn from. Same data, two views.</p>
+      <button class="copy" id="copy">Copy JSON</button>
+    </div>
+    <pre id="json"></pre>
+  </section>
+</div>
+
+<script>
+/* ---- The plan. In the workshop, the agent generates this from your answers. ---- */
+const PLAN = {
+  profile: {
+    role: "Network Engineer",
+    current_focus: "On-prem routing, switching, and firewall changes",
+    goal: "Cloud Network Architect",
+    horizon: "3–5 years"
+  },
+  stages: [
+    { title: "Now", timeframe: "0–6 months", nodes: [
+      { title: "Cloud networking basics", level: "core",    topics: ["VPC/VNet","Subnets & routing","Load balancers"] },
+      { title: "Linux & scripting",       level: "core",    topics: ["Bash","Python basics","CLI tooling"] },
+      { title: "Infra as Code",           level: "grow",    topics: ["Terraform","Git workflow"] }
+    ]},
+    { title: "Year 1", timeframe: "6–18 months", nodes: [
+      { title: "Cloud networking, deep",  level: "core",    topics: ["Transit gateways","Peering","DNS & CDN"] },
+      { title: "Network automation",      level: "core",    topics: ["Python + APIs","CI for network","Ansible"] },
+      { title: "Security & zero trust",   level: "grow",    topics: ["Segmentation","IAM","Secrets"] },
+      { title: "Containers networking",   level: "grow",    topics: ["Kubernetes CNI","Service mesh"] }
+    ]},
+    { title: "Years 2–3", timeframe: "18–36 months", nodes: [
+      { title: "Multi-cloud design",      level: "core",    topics: ["Hybrid connectivity","Landing zones"] },
+      { title: "Observability & SRE",     level: "grow",    topics: ["Metrics/traces","SLOs","Incident response"] },
+      { title: "Certifications",          level: "grow",    topics: ["AWS Adv Networking","Azure / GCP net"] },
+      { title: "Cost & governance",       level: "explore", topics: ["FinOps","Policy as code"] }
+    ]},
+    { title: "Years 3–5", timeframe: "36–60 months", nodes: [
+      { title: "Reference architectures", level: "core",    topics: ["Patterns","Design reviews","Trade-offs"] },
+      { title: "Lead & mentor",           level: "grow",    topics: ["Tech leadership","Roadmapping"] },
+      { title: "Specialize",              level: "explore", topics: ["SD-WAN / edge","AI infra networking"] }
+    ]}
+  ]
+};
+
+/* ---- Render ---- */
+const LV = {core:"Core", grow:"Grow", explore:"Explore"};
+document.getElementById("journey").innerHTML =
+  `<b>${PLAN.profile.role}</b> · ${PLAN.profile.current_focus} &nbsp;→&nbsp; <b>${PLAN.profile.goal}</b> in ${PLAN.profile.horizon}`;
+
+const done = new Set();
+let total = 0;
+const stagesEl = document.getElementById("stages");
+let idx = 0;
+PLAN.stages.forEach(stage => {
+  const s = document.createElement("div"); s.className = "stage";
+  s.innerHTML = `<div class="milestone"><span>${stage.title}<small>${stage.timeframe}</small></span></div>`;
+  stage.nodes.forEach(n => {
+    total++;
+    const key = idx++;
+    const side = (key % 2 === 0) ? "l" : "r";
+    const row = document.createElement("div"); row.className = "row " + side;
+    const chips = n.topics.map(t => `<span class="chip">${t}</span>`).join("");
+    row.innerHTML = `
+      <article class="node" data-k="${key}" tabindex="0" role="button" aria-pressed="false">
+        <h3><span class="chk">✓</span>${n.title}<span class="tag ${n.level}">${LV[n.level]}</span></h3>
+        <div class="chips">${chips}</div>
+      </article>`;
+    s.appendChild(row);
+  });
+  stagesEl.appendChild(s);
+});
+
+/* toggle done */
+function toggle(node){
+  const k = node.dataset.k;
+  if(done.has(k)){done.delete(k); node.classList.remove("done"); node.setAttribute("aria-pressed","false");}
+  else{done.add(k); node.classList.add("done"); node.setAttribute("aria-pressed","true");}
+  const p = Math.round(done.size/total*100);
+  document.getElementById("fill").style.width = p + "%";
+  document.getElementById("pct").textContent = p + "%";
+}
+stagesEl.addEventListener("click", e => { const n=e.target.closest(".node"); if(n) toggle(n); });
+stagesEl.addEventListener("keydown", e => {
+  if((e.key==="Enter"||e.key===" ") && e.target.classList.contains("node")){ e.preventDefault(); toggle(e.target); }
+});
+
+/* entrance: stagger nodes in, then run the pulse */
+const nodes = [...document.querySelectorAll(".node")];
+if(matchMedia("(prefers-reduced-motion: reduce)").matches){
+  nodes.forEach(n=>n.classList.add("seen"));
+}else{
+  nodes.forEach((n,i)=> setTimeout(()=> n.classList.add("seen"), 120 + i*70));
+  setTimeout(()=> document.getElementById("pulse").classList.add("run"), 120);
+}
+
+/* JSON tab: pretty print + light highlight + copy */
+function highlight(obj){
+  const j = JSON.stringify(obj,null,2);
+  return j
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/"([^"]+)":/g,'<span class="jk">"$1"</span>:')
+    .replace(/: "([^"]*)"/g,': <span class="js">"$1"</span>')
+    .replace(/: (\d+\.?\d*)/g,': <span class="jn">$1</span>')
+    .replace(/: (true|false|null)/g,': <span class="jb">$1</span>');
+}
+document.getElementById("json").innerHTML = highlight(PLAN);
+document.getElementById("copy").addEventListener("click", async e => {
+  try{ await navigator.clipboard.writeText(JSON.stringify(PLAN,null,2));
+       e.target.textContent="Copied"; setTimeout(()=>e.target.textContent="Copy JSON",1400);}
+  catch{ e.target.textContent="Press Ctrl+C"; }
+});
+
+/* Tabs */
+const tabs = [...document.querySelectorAll(".tab")];
+tabs.forEach(tab => tab.addEventListener("click", () => {
+  tabs.forEach(t => t.setAttribute("aria-selected", t===tab));
+  document.querySelectorAll(".panel").forEach(p => { p.classList.remove("on"); p.hidden = true; });
+  const panel = document.getElementById(tab.getAttribute("aria-controls"));
+  panel.hidden = false; requestAnimationFrame(()=>panel.classList.add("on"));
+}));
+</script>
+</body>
+</html>

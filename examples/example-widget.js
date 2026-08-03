@@ -3,9 +3,9 @@
    Rules: register exactly one widget; id must equal your file name;
    build everything inside `root`; keep it self-contained (no libraries). */
 WORKSHOP.register({
-  id: "example-widget",          // change to your legal ID (must match the file name)
+  id: "example-widget",          // change to your nickname  (must match the file name)
   title: "Click Counter",        // your card's title
-  author: "example-widget",      // your legal ID
+  author: "example-widget",      // your nickname
   mount: function (root) {
     var n = 0;
 
