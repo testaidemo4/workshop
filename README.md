@@ -173,13 +173,11 @@ Do not build the widget yet.
 |Exhibitions|Yellow (`#F9A825`)|Accent elements with dark text for contrast|
 
 ---
-# Step 5 — Build the widget
+## Step 5 — Build the widget
 
 Use one reliable, bounded prompt to complete the initial implementation before beginning the prompting exercise.
 
-> **The branch guard below is intentional.** If Codex reports it's on `master`/`main` and stops without building, that's the guard doing its job — get Codex onto your branch using the fix in [Step 2 → *If Codex says it's on `master`/`main` and stops*](#if-codex-says-its-on-mastermain-and-stops), then re-run this prompt. Also remember to replace every `<your-nickname>` with your actual nickname — leaving the placeholder in is a common reason the guard trips.
-
-## Copy build prompt
+### Copy build prompt
 
 Replace `<your-nickname>` with your actual nickname before giving this prompt to Codex.
 
@@ -192,8 +190,7 @@ Read:
 Build my assigned widget now.
 
 Before editing:
-- Confirm that the current branch is workshop/<your-nickname>.
-- If the current branch is different, stop and tell me. Do not modify any files.
+- Use only the branch workshop/<your-nickname>.
 
 Requirements:
 - Create only widgets/<your-nickname>.js.
@@ -212,7 +209,7 @@ After editing:
 - Do not commit or push yet.
 ```
 
-## Fast finishers
+### Fast finishers
 
 After the initial widget is working, try these follow-up prompts one at a time:
 
@@ -221,8 +218,7 @@ After the initial widget is working, try these follow-up prompts one at a time:
 - Ask Codex to explain the most important implementation choice using exact line references from `widgets/<your-nickname>.js`.
 ---
 
-
-### Step 6 — Preview and test locally with Codex
+## Step 6 — Preview and test locally with Codex
 
 Before committing or opening a pull request, have Codex run the Widget Wall locally and verify your widget in a browser. No package installation is required.
 
@@ -254,85 +250,109 @@ Verify:
 - Text remains readable and the layout works at narrow and wide widths.
 
 If you find a problem, fix only widgets/<your-nickname>.js and repeat the
-preview checks. Then summarize the results, show the changed-file list, and
-stop the temporary server. Do not commit or push yet.
+preview checks. Then summarize the results and show the changed-file list.
+
+Keep the preview server running and give me the URL (including
+?preview=<your-nickname>) so I can inspect it in my browser. Do not stop the
+server. Do not commit or push yet.
 ```
 
----
+> **If the preview "disappears," the server was stopped.** The prompt above keeps it running on purpose — an earlier version told Codex to *stop the temporary server* after testing, which leaves your browser tab pointing at `http://127.0.0.1:8000/` with nothing serving it. If that happens, just say **"restart the preview server and keep it running"** and Codex will bring it back (usually at `http://127.0.0.1:8000/?preview=<your-nickname>`). When you're done inspecting, tell Codex **"stop the preview server."**
 
-### Step 7 — Clean the diff, then commit and push
+---
+## Step 7 — Verify, then commit your widget
 
 `AGENTS.md` helped guide the implementation, but the workshop’s anti-conflict design requires your pull request to contain only `widgets/<your-nickname>.js`.
 
-### Copy cleanup prompt
+There are two ways to commit. Use the **`@github` connector** (7b) as your default — it writes straight to GitHub over the API, so it works even when Codex's local workspace never cloned the repo (no `origin`, empty `master`). Only use the **sandbox push** (7c) if your Codex workspace is actually connected to the repo.
 
-Replace `<your-nickname>` with your actual nickname before giving this prompt to Codex.
+### 7a — Verify the widget is clean (don't commit yet)
+
+Replace `<your-nickname>` with your actual nickname.
 
 ```
-Clean, verify, commit, and push my widget.
+Verify my widget before I commit it. Do not commit or push.
 
-Before committing:
-
-1. Confirm the current branch is workshop/<your-nickname>.
-   - If it is not, stop without modifying anything and tell me.
-
-2. Delete the temporary AGENTS.md from the repository root.
-
-3. Show:
-   - The complete git status
-   - The changed-file list
-   - The full diff
-
-4. Confirm that only this file remains changed:
-   widgets/<your-nickname>.js
-
-5. Confirm that:
-   - No shared file was changed.
+1. Show git status, the changed-file list, and the full diff.
+2. Confirm only widgets/<your-nickname>.js is new or changed.
+3. Confirm:
+   - No shared file (index.html, loader.js, styles.css, registry.js) was changed.
    - No other participant's widget was changed.
-   - The widget registers exactly once.
-   - Both id and author equal <your-nickname>.
-   - mount(root) creates visible DOM inside root.
-   - The assigned interaction is wired and visibly works.
+   - The widget registers exactly once; id and author both equal <your-nickname>.
+   - mount(root) creates visible DOM inside root and the interaction works.
    - No external libraries or network calls are used.
 
-Do not commit, discard, overwrite, or repair unexpected changes if any check fails. Stop and report the problem instead.
-
-If every check passes:
-
-1. Commit only widgets/<your-nickname>.js with this message:
-   Add <your-nickname> widget
-
-2. Push the branch to origin:
-   workshop/<your-nickname>
-
-3. Show the final status and confirm:
-   - The working tree is clean.
-   - AGENTS.md was not committed.
-   - The branch diff against main contains only widgets/<your-nickname>.js.
-   - The commit and push succeeded.
+If any check fails, stop and tell me the problem — do not fix, discard, or commit.
 ```
+
+### 7b — Commit via the `@github` connector (recommended)
+
+First have Codex print the file so you can hand it to the connector:
+
+```
+Print the full contents of widgets/<your-nickname>.js in a single code block.
+```
+
+Then paste this to the **GitHub connector**, including the file content:
+
+```
+@github in testaidemo4/workshop on branch workshop/<your-nickname>,
+create or update the file widgets/<your-nickname>.js with the content below,
+commit message "Add <your-nickname> widget". Do not touch any other file.
+
+<paste the full contents of widgets/<your-nickname>.js here>
+```
+
+Confirm the real code landed (not an empty or placeholder file):
+
+```
+@github show widgets/<your-nickname>.js on branch workshop/<your-nickname> in testaidemo4/workshop
+```
+
+> **You're trusting the paste.** With the connector, the sandbox isn't enforcing the "only my file changed / correct id / no shared files" guards — so commit only the tested `widgets/<your-nickname>.js`, and make sure it's the version that passed Step 6.
+
+### 7c — Fallback: push from the Codex sandbox
+
+Only if `git remote -v` shows `testaidemo4/workshop`. Replace `<your-nickname>`.
+
+```
+Confirm git branch --show-current prints workshop/<your-nickname> and git remote -v
+names testaidemo4/workshop. If not, stop and tell me.
+
+Then: delete AGENTS.md from the repo root, commit only widgets/<your-nickname>.js with
+message "Add <your-nickname> widget", and run: git push -u origin workshop/<your-nickname>.
+Show the final git status and git log --oneline -3, and confirm the branch is now one
+commit ahead of main.
+
+If the push fails with a no-origin, auth, or 403 error, stop — use the @github
+connector path (7b) instead.
+```
+
+
 ---
+## Step 8 — Open the pull request and let the check run
 
-### Step 8 — Open the pull request and let the check run
-
-```
-Open a PR from workshop/<my-nickname> into main.
-Title: "<TASK-ID>: add /<my-nickname> widget"
-Reference my Issue with "Closes #<n>". Do not merge. Return the PR number.
-```
-
-On the PR page, the **PR check** runs automatically and loads your widget in a headless browser to confirm it registers and works. Wait for the green check.
-
-**If it goes red,** open the failed check, copy the log, and hand it to Codex:
+If you committed with the `@github` connector in Step 7, open the PR the same way:
 
 ```
-The PR check failed on my pull request. Here is the failing log:
+@github open a PR in testaidemo4/workshop from workshop/<your-nickname> into main,
+title "<TASK-ID>: add /<your-nickname> widget", body "Closes #<n>".
+Do not merge. Return the PR number.
+```
+
+(If you pushed from the sandbox instead, you can ask Codex to open it: *"Open a PR from workshop/<your-nickname> into main, title …, body 'Closes #<n>'. Do not merge. Return the PR number."*)
+
+On the PR page, the **PR check** runs automatically and loads your widget in a headless browser to confirm it registers and works — it doesn't care how the file got committed. Wait for the green check.
+
+**If it goes red,** open the failed check, copy the log, and fix the file. Edit `widgets/<your-nickname>.js` (in Codex or by re-committing through the connector), then update the same branch:
+
+```
+The PR check failed. Here is the failing log:
 <paste the log>
-Diagnose the cause and fix it on branch workshop/<my-nickname>.
-Change only my widget file. Then push again.
+Tell me the root cause in one sentence and give me a corrected widgets/<your-nickname>.js.
 ```
 
-Repeat until the check is green.
+Re-commit the corrected file to `workshop/<your-nickname>` (connector 7b or sandbox push 7c). Repeat until the check is green.
 
 ---
 
