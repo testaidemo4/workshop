@@ -1,8 +1,8 @@
-# AI Collaboration Working Session (45 minutes) — Claude Code & GitHub Copilot edition
+# AI Collaboration Working Session (45 minutes) — Claude Code edition
 
-Two hands-on activities, run back to back. You'll plan with an AI assistant and let a coding agent — **Claude Code** or **GitHub Copilot** — do the building, so **you don't have to write code by hand**.
+Two hands-on activities, run back to back. You'll plan with an AI assistant and let a coding agent — **Claude Code** — do the building, so **you don't have to write code by hand**.
 
-> This is the Claude Code / GitHub Copilot companion to the main [README.md](README.md), which is written for ChatGPT + Codex. The activities, the widget contract, and the rules are identical — only the tool-specific steps (connecting, branching, committing, opening a PR) differ. Pick the guide that matches your agent.
+> This is the **Claude Code** version of the workshop guide. The main [README.md](README.md) is written for ChatGPT + Codex, and there's a [README_COPILOT.md](README_COPILOT.md) for GitHub Copilot. The activities, the widget contract, and the rules are identical across all three — only the tool-specific steps (connecting, branching, committing, opening a PR) differ.
 
 | Time | Activity |
 |---|---|
@@ -24,32 +24,25 @@ Your widget lives in a single file named after your nickname:
 widgets/<your-nickname>.js
 ```
 
-The wall starts empty and fills with everyone's widgets as pull requests merge. You'll do **all the coding through prompts** to your agent — you're not expected to write JavaScript by hand.
+The wall starts empty and fills with everyone's widgets as pull requests merge. You'll do **all the coding through Claude Code prompts** — you're not expected to write JavaScript by hand.
 
-> **New to prompting?** Read [PROMPTING_GUIDE.md](PROMPTING_GUIDE.md) first — it teaches the prompt structure used below and has the full, detailed version of every prompt here. The prompts themselves are tool-agnostic: they work the same whether you send them to Claude Code or GitHub Copilot.
+> **New to prompting?** Read [PROMPTING_GUIDE.md](PROMPTING_GUIDE.md) first — it teaches the prompt structure used below and has the full, detailed version of every prompt here.
 
 ---
 
-### Choose your agent
+### About Claude Code
 
-This guide covers two agents. Use whichever you have access to.
-
-- **Claude Code** — Anthropic's coding agent. Available as a CLI in the terminal, a desktop app, the web app at [claude.ai/code](https://claude.ai/code), and IDE extensions (VS Code, JetBrains). It works directly against a git checkout: it can create branches, edit files, run a local server, commit, push, and open PRs for you.
-- **GitHub Copilot** — available as the **Copilot coding agent** (assign a GitHub Issue to Copilot and it works autonomously and opens a PR) and as **Copilot Chat in agent mode** inside VS Code / your IDE (it edits files in your working tree and you commit/push).
-
-Where a step differs between the two, you'll see a **Claude Code** block and a **GitHub Copilot** block. Everything else is shared.
+**Claude Code** is Anthropic's coding agent. It's available as a CLI in the terminal, a desktop app (Mac/Windows), the web app at [claude.ai/code](https://claude.ai/code), and IDE extensions (VS Code, JetBrains). It works directly against a real git checkout: it can create branches, read and edit files, run a local server, commit, push, and open PRs for you. Everything in this guide is done by sending Claude Code plain-English prompts.
 
 ---
 
 ### Before you start
 
-1. **Access to your agent.**
-   - *Claude Code:* installed and signed in (CLI, IDE extension, or [claude.ai/code](https://claude.ai/code)).
-   - *GitHub Copilot:* an active Copilot subscription with the coding agent enabled, and/or the Copilot Chat extension in VS Code with **agent mode**.
+1. **Claude Code installed and signed in** — CLI, IDE extension, or [claude.ai/code](https://claude.ai/code). Confirm you can open a session against a repository.
 2. **The shared GitHub credentials / repo access** from the facilitator — everyone works against the same repo, `testaidemo4/workshop`.
 3. **Your nickname** (e.g. `dar`) — used for your branch and your file name.
 
-You do **not** need to install Node, npm, or anything else on your machine — just git and your agent. GitHub runs the tests for you on every pull request.
+You do **not** need to install Node, npm, or anything else on your machine — just git and Claude Code. GitHub runs the tests for you on every pull request.
 
 > Never paste passwords or tokens into a prompt or into code.
 
@@ -57,11 +50,7 @@ You do **not** need to install Node, npm, or anything else on your machine — j
 
 ### Step 1 — Connect and verify (read-only)
 
-Point your agent at the shared repository, then verify it can read the project.
-
-**Claude Code:** open the repo (`claude` in the repo directory, or open the folder in your IDE, or start a session on the web against `testaidemo4/workshop`). Then send:
-
-**GitHub Copilot:** open the repo in VS Code with Copilot Chat in **agent mode** (or open the repo on github.com to use the coding agent). Then send:
+Open the repo in Claude Code (`claude` in the repo directory, open the folder in your IDE, or start a session on the web against `testaidemo4/workshop`). Then send:
 
 ```
 Confirm you can access the workshop repository.
@@ -77,21 +66,11 @@ You should hear back that: the page is the shared **Widget Wall**; each widget i
 ---
 ## Step 2 — Create your branch (this triggers your task)
 
-Create a branch named `workshop/<your-nickname>` from `main`.
-
-**Claude Code:**
+Create a branch named `workshop/<your-nickname>` from `main`. Send this to Claude Code:
 
 ```
 Create a branch named workshop/<your-nickname> from main and switch to it.
 Show me the output of: git branch --show-current
-Do not build anything yet.
-```
-
-**GitHub Copilot (agent mode / CLI):**
-
-```
-Create a branch named workshop/<your-nickname> off main and check it out.
-Then run: git branch --show-current
 Do not build anything yet.
 ```
 
@@ -106,9 +85,9 @@ Do not build anything yet.
 
 Pushing or creating the branch triggers a GitHub Action that should open your **assignment Issue** within approximately one minute.
 
-### If your agent is on `master`/`main` and doesn't see your branch
+### If Claude Code is on `master`/`main` and doesn't see your branch
 
-Creating the branch on GitHub only changes the **remote**. Your agent may still be sitting on the default branch. Git is already available in both Claude Code and Copilot's environment, so these commands just point the existing checkout at your branch:
+Creating the branch on GitHub only changes the **remote**. Claude Code may still be sitting on the default branch. Git is already available in its environment, so these commands just point the existing checkout at your branch:
 
 ```
 Do not build anything yet. Run these and show the raw output:
@@ -121,8 +100,8 @@ git branch --show-current
 The last line must print `workshop/<your-nickname>`. Notes:
 
 - If checkout says the branch doesn't exist, the `git fetch origin` just before it is what pulls it down — run the block as-is. Still missing? Run `git branch -r`; if `origin/workshop/<your-nickname>` isn't listed, the branch was created on the wrong remote.
-- If `git remote -v` doesn't name `testaidemo4/workshop`, your agent isn't in the shared repo at all. Re-open the agent against **`testaidemo4/workshop`** and run the block above.
-- **Best fix:** start your agent session with `workshop/<your-nickname>` as the base/working branch so it opens on your branch from the first second and the branch guard passes immediately.
+- If `git remote -v` doesn't name `testaidemo4/workshop`, Claude Code isn't in the shared repo at all. Re-open it against **`testaidemo4/workshop`** and run the block above.
+- **Best fix:** start your Claude Code session with `workshop/<your-nickname>` as the base/working branch so it opens on your branch from the first second and the branch guard passes immediately.
 
 ---
 
@@ -132,7 +111,7 @@ Open the repository's [Issues page](https://github.com/testaidemo4/workshop/issu
 
 The Issue identifies the widget you must build — for example, a tip calculator — and provides the requirements, contract, and rules.
 
-Ask your agent to restate the assignment:
+Ask Claude Code to restate the assignment:
 
 ```
 Find the open assignment Issue whose title ends with my nickname: (<your-nickname>).
@@ -146,12 +125,10 @@ Summarize:
 Do not modify any files.
 ```
 
-> **GitHub Copilot coding agent:** you can also just **assign the Issue to Copilot** on github.com. It will read the Issue, create a branch, build the widget, and open a PR on its own. If you go that route, review its PR against the checklist in Step 7a before merging — the anti-conflict rule (only `widgets/<your-nickname>.js` changes) still applies.
-
 ---
 ## Step 4 — Create your temporary `AGENTS.md`
 
-Use `AGENTS.md` to give your agent persistent preferences for this lab. Both Claude Code and GitHub Copilot read `AGENTS.md` from the repo root. This file is temporary workshop scaffolding and must not be included in your pull request.
+Use `AGENTS.md` to give Claude Code persistent preferences for this lab. Claude Code reads `AGENTS.md` from the repo root. This file is temporary workshop scaffolding and must not be included in your pull request.
 
 > **Important:** The repository's anti-conflict design requires your pull request to contain only `widgets/<your-nickname>.js`. Delete `AGENTS.md` before committing, then confirm that it does not appear in the diff.
 
@@ -178,7 +155,7 @@ Use `AGENTS.md` to give your agent persistent preferences for this lab. Both Cla
 
 ### Copy prompt
 
-Replace the placeholders below with your actual nickname and business unit before giving the prompt to your agent.
+Replace the placeholders below with your actual nickname and business unit before giving the prompt to Claude Code.
 
 ```
 Create AGENTS.md in the repository root using the provided template.
@@ -190,7 +167,7 @@ Replace the nickname and business-unit placeholders with these values.
 
 This file is temporary workshop scaffolding. It must not be committed or pushed.
 
-After creating the file, summarize the visual and scope rules the agent will follow.
+After creating the file, summarize the visual and scope rules Claude Code will follow.
 Do not build the widget yet.
 ```
 
@@ -210,7 +187,7 @@ Use one reliable, bounded prompt to complete the initial implementation before b
 
 ### Copy build prompt
 
-Replace `<your-nickname>` with your actual nickname before giving this prompt to your agent.
+Replace `<your-nickname>` with your actual nickname before giving this prompt to Claude Code.
 
 ```
 Read:
@@ -244,17 +221,17 @@ After editing:
 
 After the initial widget is working, try these follow-up prompts one at a time:
 
-- Ask your agent to test keyboard interaction and empty or invalid input states.
+- Ask Claude Code to test keyboard interaction and empty or invalid input states.
 - Ask for one visual refinement that preserves `AGENTS.md` and the assigned behavior.
-- Ask your agent to explain the most important implementation choice using exact line references from `widgets/<your-nickname>.js`.
+- Ask Claude Code to explain the most important implementation choice using exact line references from `widgets/<your-nickname>.js`.
 
 ---
 
 ## Step 6 — Preview and test locally
 
-Before committing or opening a pull request, have your agent run the Widget Wall locally and verify your widget in a browser. No package installation is required.
+Before committing or opening a pull request, have Claude Code run the Widget Wall locally and verify your widget in a browser. No package installation is required.
 
-Replace `<your-nickname>` with your actual nickname before giving this prompt to your agent.
+Replace `<your-nickname>` with your actual nickname before giving this prompt to Claude Code.
 
 ```
 Preview and test my widget locally before committing.
@@ -272,7 +249,8 @@ Preview:
    (on Windows, prefer: py -m http.server 8000)
 2. If that command is unavailable, use another already installed local
    runtime. Do not install anything.
-3. Give me the localhost URL to open in my browser, including
+3. Open the local Widget Wall in Claude Code's browser preview if available.
+   Otherwise, give me the localhost URL to open in my browser, including
    ?preview=<your-nickname>.
 
 Verify:
@@ -290,14 +268,14 @@ Keep the preview server running and give me the URL (including
 server. Do not commit or push yet.
 ```
 
-> **If the preview "disappears," the server was stopped.** The prompt above keeps it running on purpose. If your browser tab points at `http://127.0.0.1:8000/` with nothing serving it, just say **"restart the preview server and keep it running"** and your agent will bring it back (usually at `http://127.0.0.1:8000/?preview=<your-nickname>`). When you're done inspecting, tell the agent **"stop the preview server."**
+> **If the preview "disappears," the server was stopped.** The prompt above keeps it running on purpose. If your browser tab points at `http://127.0.0.1:8000/` with nothing serving it, just say **"restart the preview server and keep it running"** and Claude Code will bring it back (usually at `http://127.0.0.1:8000/?preview=<your-nickname>`). When you're done inspecting, tell it **"stop the preview server."**
 
 ---
 ## Step 7 — Verify, then commit your widget
 
 `AGENTS.md` helped guide the implementation, but the workshop's anti-conflict design requires your pull request to contain only `widgets/<your-nickname>.js`.
 
-Both Claude Code and GitHub Copilot work directly against a real git checkout, so committing and pushing is straightforward — no API-only workaround is needed. The only rule: **only `widgets/<your-nickname>.js` may be in the diff**, and `AGENTS.md` must be deleted first.
+Claude Code works directly against a real git checkout, so committing and pushing is straightforward. The only rule: **only `widgets/<your-nickname>.js` may be in the diff**, and `AGENTS.md` must be deleted first.
 
 ### 7a — Verify the widget is clean (don't commit yet)
 
@@ -337,12 +315,10 @@ commit ahead of main and that AGENTS.md is not in the diff.
 If the push fails with an auth or permission error, stop and tell me the exact error.
 ```
 
-> **GitHub Copilot coding agent:** if you assigned the Issue to Copilot in Step 3, it has already committed and pushed to its own branch. Just confirm the branch contains only `widgets/<your-nickname>.js` before moving on.
-
 ---
 ## Step 8 — Open the pull request and let the check run
 
-Ask your agent to open the PR:
+Ask Claude Code to open the PR (it can do this directly via the GitHub integration):
 
 ```
 Open a PR in testaidemo4/workshop from workshop/<your-nickname> into main,
@@ -350,11 +326,9 @@ title "<TASK-ID>: add /<your-nickname> widget", body "Closes #<n>".
 Do not merge. Return the PR number.
 ```
 
-> **Claude Code** can open the PR directly (via the GitHub integration / `gh`). **GitHub Copilot coding agent** opens the PR automatically when it finishes the Issue; in **agent mode** you can ask it to open the PR, or use the GitHub web **Compare & pull request** button.
-
 On the PR page, the **PR check** runs automatically and loads your widget in a headless browser to confirm it registers and works — it doesn't care how the file got committed. Wait for the green check.
 
-**If it goes red,** open the failed check, copy the log, and fix the file. Edit `widgets/<your-nickname>.js`, then update the same branch:
+**If it goes red,** open the failed check, copy the log, and fix the file:
 
 ```
 The PR check failed. Here is the failing log:
@@ -380,21 +354,21 @@ After the facilitator merges, GitHub Actions rebuilds the wall and redeploys it 
 - Never edit `index.html`, `loader.js`, `styles.css`, `registry.js`, or others' widgets.
 - No credentials or secrets anywhere.
 
-- [ ] Connected Claude Code or GitHub Copilot to the repo
+- [ ] Connected Claude Code to the repo
 - [ ] Created `workshop/<nickname>`
 - [ ] Read my assignment Issue
-- [ ] Built my widget via the agent
+- [ ] Built my widget via Claude Code
 - [ ] Previewed and tested my widget locally
 - [ ] Reviewed the diff (only my widget file changed; no `AGENTS.md`)
 - [ ] Committed, pushed, opened a PR (did not merge)
-- [ ] PR check went green (paste the log to the agent if red)
+- [ ] PR check went green (paste the log to Claude Code if red)
 - [ ] Saw my card on the live wall
 
 ---
 
 # Part 2 — Career Roadmap Builder
 
-Part 1 was about *your data*. Part 2 is about *you*. You'll answer three short questions — where you are now and where you want to be in a few years — and the agent will turn that into a personalized **career roadmap**: first a structured **plan (JSON)**, then a **roadmap.sh-style diagram** drawn from that same plan. Two tabs on one page, one source of truth.
+Part 1 was about *your data*. Part 2 is about *you*. You'll answer three short questions — where you are now and where you want to be in a few years — and Claude Code will turn that into a personalized **career roadmap**: first a structured **plan (JSON)**, then a **roadmap.sh-style diagram** drawn from that same plan. Two tabs on one page, one source of truth.
 
 Nothing in Part 2 is committed. The goal is a working `career-roadmap.html` you can open in a browser and actually keep.
 
@@ -409,13 +383,13 @@ It opens with a double-click — no server, no build step — and has smooth ent
 ## Before you start
 
 - Your facilitator has staged an `activity2/` folder containing `AGENTS.md`, a `README.md` with the plan schema, and `examples/career-roadmap.html` — a finished reference you're aiming to match.
-- Open the `activity2/` folder in Claude Code or GitHub Copilot.
+- Open the `activity2/` folder in Claude Code.
 - This part is **local only**: no branch, no commit, no push, no PR.
 - Answer honestly — the roadmap is only as useful as what you tell it. No private or company-confidential detail is needed.
 
 ## Step 1 — Open the folder and study the target (read-only)
 
-Point your agent at the `activity2/` folder, then send:
+Point Claude Code at the `activity2/` folder, then send:
 
 ```
 Confirm you can see this folder.
@@ -517,7 +491,7 @@ Review the tree before building:
 - Does each stage represent a realistic progression?
 - Are optional topics marked as `EXPLORE` rather than treated as requirements?
 
-Ask the agent to revise any weak or misplaced branch before continuing. If a stage feels off, say so in one sentence and ask the agent to revise the PLAN before building.
+Ask Claude Code to revise any weak or misplaced branch before continuing. If a stage feels off, say so in one sentence and ask it to revise the PLAN before building.
 
 ## Step 4 — Build the roadmap page
 
@@ -543,23 +517,23 @@ Do not commit or push.
 
 ## Step 5 — Preview and test locally
 
-Double-click `career-roadmap.html` (or use the path the agent gives you) and check:
+Double-click `career-roadmap.html` (or use the path Claude Code gives you) and check:
 
 - both tabs work, and the JSON tab matches what's drawn on the Roadmap tab,
 - the stages read in a sensible order toward your goal,
 - ticking nodes updates the progress bar,
 - it's readable at projector size and has no console errors.
 
-If something's off, describe exactly what you see and let the agent fix **only** `career-roadmap.html`, then re-open it.
+If something's off, describe exactly what you see and let Claude Code fix **only** `career-roadmap.html`, then re-open it.
 
 ## Fast finishers
 
 Add one at a time:
-- A "Resources" line on each node (ask the agent to suggest a doc, course, or keyword to search — no fake links).
+- A "Resources" line on each node (ask Claude Code to suggest a doc, course, or keyword to search — no fake links).
 - Estimated hours or effort per stage, with a total.
 - A short "Why this order?" note the agent generates for your specific path.
 - A print / export-to-PDF button so you can keep the roadmap.
-- A second goal: ask the agent for an *alternative* branch if you went a different direction.
+- A second goal: ask for an *alternative* branch if you went a different direction.
 
 ## Rules & checklist — Part 2
 
