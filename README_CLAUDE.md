@@ -2,7 +2,7 @@
 
 Two hands-on activities, run back to back. You'll plan with an AI assistant and let a coding agent — **Claude Code** — do the building, so **you don't have to write code by hand**.
 
-> This is the **Claude Code** version of the workshop guide. The main [README.md](README.md) is written for ChatGPT + Codex, and there's a [README_COPILOT.md](README_COPILOT.md) for GitHub Copilot. The activities, the widget contract, and the rules are identical across all three — only the tool-specific steps (connecting, branching, committing, opening a PR) differ.
+> This is the **Claude Code** version of the workshop guide. The main [README_CODEX.md](README_CODEX.md) is written for ChatGPT + Codex, and there's a [README_COPILOT.md](README_COPILOT.md) for GitHub Copilot. The activities, the widget contract, and the rules are identical across all three — only the tool-specific steps (connecting, branching, committing, opening a PR) differ.
 
 | Time | Activity |
 |---|---|
