@@ -51,14 +51,14 @@ Every strong prompt in this workshop answers five questions. Think of them as a 
 Here's the same counter, written with all five:
 
 ```
-Context: I'm on branch workshop/pagduldx in the Widget Wall project. The page
-auto-loads widgets/pagduldx.js and calls mount(root) with an empty container.
+Context: I'm on branch workshop/dar in the Widget Wall project. The page
+auto-loads widgets/dar.js and calls mount(root) with an empty container.
 Copy the shape of examples/example-widget.js.
 
-Task: build a counter widget in widgets/pagduldx.js.
+Task: build a counter widget in widgets/dar.js.
 
 Constraints:
-- Register one widget whose id is "pagduldx".
+- Register one widget whose id is "dar".
 - Build everything inside root; no libraries, no network calls.
 - Don't touch index.html, loader.js, styles.css, registry.js, or anyone else's file.
 
@@ -86,11 +86,11 @@ Codex has to invent the inputs, the math, the styling rules, and what "nice" mea
 **Specific and grounded in the project:**
 
 ```
-Context: branch workshop/pagduldx; copy examples/example-widget.js.
-Task: build a tip calculator in widgets/pagduldx.js.
+Context: branch workshop/dar; copy examples/example-widget.js.
+Task: build a tip calculator in widgets/dar.js.
 Constraints: two number inputs (bill, tip %); build all DOM inside root; no libraries.
 Output: whenever either input changes, show the tip amount and the total, live.
-Verify: it registers with id "pagduldx" and the PR check passes.
+Verify: it registers with id "dar" and the PR check passes.
 ```
 
 Same idea, wildly different result — because we named the specifics (exact inputs, live updates), gave the context Codex can't see (which branch, which file to copy), and defined "done" as something checkable. If you take one habit from this guide, take this one: **name the specifics.**
@@ -102,14 +102,14 @@ You can phrase a prompt as an instruction, a statement, or a question — and ea
 **Instruction** — best for getting work done:
 
 ```
-Build widgets/pagduldx.js: a tip calculator with bill and tip-% inputs that show
+Build widgets/dar.js: a tip calculator with bill and tip-% inputs that show
 the tip and total live. Keep it inside root, no libraries.
 ```
 
 **Statement** — best for handing over a spec:
 
 ```
-I need a tip-calculator widget in widgets/pagduldx.js. It has a bill input and a
+I need a tip-calculator widget in widgets/dar.js. It has a bill input and a
 tip-% input. Whenever either changes, it shows the tip and the total. All the code
 lives inside root, with no external libraries.
 ```
