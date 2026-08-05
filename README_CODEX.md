@@ -5,8 +5,8 @@ Two hands-on activities, run back to back. You'll plan with an AI assistant and 
 | Time | Activity |
 |---|---|
 | 0–20 min | **Part 1 — Widget Wall.** Build one interactive widget from an assigned Issue and get it onto the shared live wall (this part commits and opens a PR). |
-| 20–32 min | **Part 2 — Career Roadmap Builder.** Answer three questions about where you are and where you want to be, and let the agent build you a personalized roadmap page — a JSON plan plus a roadmap.sh-style diagram. Prompt-only, no commit. |
-| 32–45 min | **Demos, overflow & debrief.** Show a few roadmaps, help stragglers, close on takeaways. |
+| 20–40 min | **Part 2 — Career Roadmap Builder.** Answer three questions about where you are and where you want to be, and let the agent build you a personalized roadmap page — a JSON plan plus a roadmap.sh-style diagram. Prompt-only, no commit. |
+| 40–45 min | **Questions.** Open Q&A on both activities and close on takeaways. |
 
 > Part 1 uses the shared GitHub repo and ends in a pull request. Part 2 is **local only** — you build and preview in your browser and never commit. Keep the two mentally separate.
 
