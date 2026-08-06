@@ -26,16 +26,23 @@ WORKSHOP.register({
     label.style.letterSpacing = "0.04em";
     label.style.color = accent;
 
+    var displayPanel = document.createElement("div");
+    displayPanel.style.marginBottom = "12px";
+    displayPanel.style.padding = "12px";
+    displayPanel.style.border = "2px solid " + accent;
+    displayPanel.style.borderRadius = "8px";
+    displayPanel.style.background = "#FFFFFF";
+
     var display = document.createElement("output");
     display.className = "count";
     display.setAttribute("aria-live", "polite");
     display.setAttribute("aria-label", "Current count");
     display.textContent = "0";
     display.style.display = "block";
-    display.style.marginBottom = "12px";
     display.style.fontSize = "40px";
     display.style.fontWeight = "800";
     display.style.lineHeight = "1";
+    display.style.color = accent;
 
     var controls = document.createElement("div");
     controls.style.display = "flex";
@@ -77,8 +84,9 @@ WORKSHOP.register({
 
     controls.appendChild(increment);
     controls.appendChild(reset);
-    panel.appendChild(label);
-    panel.appendChild(display);
+    displayPanel.appendChild(label);
+    displayPanel.appendChild(display);
+    panel.appendChild(displayPanel);
     panel.appendChild(controls);
     root.appendChild(panel);
   },
