@@ -3,8 +3,21 @@ WORKSHOP.register({
   title: "Random picker",
   author: "Ska",
   mount: function (root) {
-    var items = ["Blueberry", "Coconut", "Mango", "Peach", "Pineapple"];
+    var items = [
+      "Spider-Man",
+      "Iron Man",
+      "Captain America",
+      "Thor",
+      "Black Panther",
+      "Captain Marvel",
+      "Hulk",
+      "Black Widow",
+      "Doctor Strange",
+      "Wolverine",
+    ];
     var previousIndex = -1;
+
+    root.style.backgroundColor = "#F57C00";
 
     var result = document.createElement("div");
     result.className = "count";
